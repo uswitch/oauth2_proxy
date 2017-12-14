@@ -9,10 +9,9 @@ pipeline:
       - go get -v -t ./...
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/proxy
 
-  publish:
+  publish_branch:
     when:
       event: push
-      branch: master
     image: plugins/docker
     registry: quay.io
     repo: quay.io/uswitch/oauth2_proxy
@@ -21,4 +20,14 @@ pipeline:
       - ${DRONE_COMMIT_SHA}
       - ${DRONE_COMMIT_BRANCH}
       - latest
+
+  publish_master:
+    when:
+      event: push
+      branch: master
+    image: plugins/docker
+    registry: quay.io
+    repo: quay.io/uswitch/oauth2_proxy
+    secrets: [ docker_username, docker_password ]
+    tags:
       - stable
